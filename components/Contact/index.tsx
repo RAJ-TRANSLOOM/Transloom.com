@@ -554,7 +554,34 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // ... (same logic as before)
+  const formData = new FormData(e.target);
+  const formObject = {};
+  formData.forEach((value, key) => {
+    if (['name', 'email', 'subject', 'phoneNumber', 'message'].includes(key))
+    formObject[key] = value;
+  });
+
+  try {
+    console.log(formObject)
+    const response = await fetch("https://server.transloom.com/api/form/submit-form", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formObject),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to submit form");
+    }
+
+    setShowPopup(true);
+    // Optional: Reset form
+    e.target.reset();
+  } catch (error) {
+    console.error("Error:", error.message);
+    // Handle error state or display error message
+  }
 
     if (e === e) {
       setShowPopup(true);
@@ -625,7 +652,7 @@ const Contact = () => {
                 {/* Name and Email Inputs */}
                 <div className="mb-7.5 flex flex-col gap-7.5 lg:flex-row lg:justify-between lg:gap-14">
                   <input
-                    name="fullname"
+                    name="name"
                     type="text"
                     placeholder="Name"
                     required
@@ -652,7 +679,7 @@ const Contact = () => {
                   />
 
                   <input
-                    name="phone"
+                    name="phoneNumber"
                     type="text"
                     placeholder="Phone number"
                     required
